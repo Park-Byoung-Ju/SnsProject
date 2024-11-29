@@ -1,0 +1,18 @@
+
+spring:
+    config:
+        import: security-varialble.yml
+    mvc: #static 파일들은 /static/~의 형식으로 불러오게 하라
+        static-path-pattern: "/static/**"
+    application: # 기본 설정
+        name: Sns
+    thymeleaf: #thymeleaf 설정
+        cache: false
+    datasource: #mybatis 설정
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://localhost:3306/totragaram
+        username: root
+        password: ${mysql.password}
+
+mybatis:
+    mapper-locations: mappers/*Mapper.xml
