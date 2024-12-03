@@ -10,7 +10,7 @@ spring:
         cache: false
     datasource: #mybatis 설정
         driver-class-name: com.mysql.cj.jdbc.Driver
-        url: jdbc:mysql://localhost:3306/totragaram
+        url: jdbc:mysql://localhost:3306/totragram
         username: root
         password: ${mysql.password}
 
