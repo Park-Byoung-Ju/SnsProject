@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+<link rel="stylesheet" href="/static/css/style.css">
+<title>회원가입</title>
+</head>
+<body>
+	<div class="container w-50">
+		<section class="gray-border p-5">
+			
+			<h2 class="text-center">Totragram</h2>
+			
+			
+			<div class="p-5">
+				<div class="d-flex">
+					<input class="form-control col-9" id="id" type="text" placeholder="아이디">
+					<button id="idCheck" type="button" class="btn btn-primary col-3 ml-1" >중복확인</button>
+				</div>
+				
+				<input class="form-control mt-2" id="password" type="text" placeholder="비밀번호">
+				<input class="form-control mt-2" id="passwordCheck" type="text" placeholder="비밀번호 확인">
+				<input class="form-control mt-2" id="name" type="text" placeholder="이름">
+				<input class="form-control mt-2" id="email" type="text" placeholder="이메일">
+				<input class="form-control mt-2" id="nickname" type="text" placeholder="닉네임">
+				
+				<button class="btn btn-primary w-100 mt-3" type="button" id="joinBtn" disabled>회원가입</button>
+			</div>
+			
+			<div class="d-flex justify-content-center">
+				<h5>이미 계정이 있으신가요? <a href="/user/login-view">로그인</a></h5>
+			</div>			
+		</section>
+	</div>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js" integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous"></script>
+
+<script>
+	$(document).ready(function(){
+		
+		$("#idCheck").on("click", function(){
+			$("#joinBtn").attr("disabled", false);
+		});
+		
+		$("#id").on("input", function(){
+			$("#joinBtn").attr("disabled", true);
+		});
+		
+		
+		$("#joinBtn").on("click",function(){
+			let id = $("#id").val();
+			let password = $("#password").val();
+			let passwordCheck = $("#passwordCheck").val();
+			let name = $("#name").val();
+			let email = $("#email").val();
+			let nickname = $("#nickname").val();
+			
+			if(id.length == 0){
+				alert("아이디를 입력해주세요");
+				return false;
+			}
+			
+			if(password.length == 0){
+				alert("비밀번호를 입력해주세요");
+				return false;
+			}
+			
+			if(passwordCheck.length == 0){
+				alert("비밀번호 확인을 입력해주세요");
+				return false;
+			}
+			
+			if(name.length == 0){
+				alert("이름을 입력해주세요");
+				return false;
+			}
+			
+			if(email.length == 0){
+				alert("이메일을 입력해주세요");
+				return false;
+			}
+			
+			if(nickname.length == 0){
+				alert("별명을 입력해주세요");
+				return false;
+			}
+			
+			if(password != passwordCheck){
+				alert("비밀번호와 비밀번호 확인이 일치하지 않습니다");
+				return false;
+			}
+		});
+		
+		
+	});
+</script>
+
+</body>
+</html>

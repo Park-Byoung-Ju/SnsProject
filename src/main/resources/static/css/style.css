@@ -1,0 +1,14 @@
+@charset "UTF-8";
+
+#wrap{
+	width:1200px;
+	margin:auto;
+}
+
+.gray-border{
+	border:1px solid gray;
+}
+
+#logo{
+	width:100%;
+}

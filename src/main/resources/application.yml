@@ -1,7 +1,7 @@
 
 spring:
     config:
-        import: security-varialble.yml
+        import: security-variable.yml
     mvc: #static 파일들은 /static/~의 형식으로 불러오게 하라
         static-path-pattern: "/static/**"
     application: # 기본 설정
