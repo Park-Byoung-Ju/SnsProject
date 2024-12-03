@@ -46,7 +46,6 @@
 		$("#saveId").hide();
 		
 		$("#idCheck").on("click", function(){
-			$("#joinBtn").attr("disabled", false);
 			
 			let id = $("#id").val();
 			
@@ -64,6 +63,7 @@
 						alert("사용가능한 id입니다");
 						$("#saveId").show();
 						$("#notId").hide();
+						$("#joinBtn").attr("disabled", false);
 					}else{
 						alert("이미 사용 중인 id 입니다");
 						$("#saveId").hide();
@@ -79,8 +79,7 @@
 		
 		$("#id").on("input", function(){
 			$("#joinBtn").attr("disabled", true);
-		});
-		
+		});	
 		
 		$("#joinBtn").on("click",function(){
 			let id = $("#id").val();
