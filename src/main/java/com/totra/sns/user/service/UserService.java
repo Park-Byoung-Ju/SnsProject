@@ -3,6 +3,7 @@ package com.totra.sns.user.service;
 import org.springframework.stereotype.Service;
 
 import com.totra.sns.common.SHA256HashingEncoder;
+import com.totra.sns.user.domain.User;
 import com.totra.sns.user.repository.UserRepository;
 
 @Service
@@ -38,5 +39,10 @@ public class UserService {
 		}else {
 			return true;
 		}
+	}
+	
+	public User login(String loginId, String password) {
+		String encodingPassword = SHA256HashingEncoder.encode(password);
+		return userRepository.login(loginId, encodingPassword);
 	}
 }

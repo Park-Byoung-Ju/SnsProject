@@ -9,7 +9,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.totra.sns.user.domain.User;
 import com.totra.sns.user.service.UserService;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 @RequestMapping("/user")
 @RestController
@@ -40,5 +44,25 @@ public class UserRestController {
 	@GetMapping("/join/duplicate-id")
 	public boolean joinIdCheck(@RequestParam("loginId") String loginId) {
 		return userSerivce.idCheck(loginId);		
+	}
+	
+	@PostMapping("/login")
+	public Map<String, Boolean> login(@RequestParam("loginId") String loginId
+									,@RequestParam("password") String password
+									,HttpServletRequest request) {
+		Map<String, Boolean> resultMap = new HashMap<>();
+		User user = userSerivce.login(loginId, password);
+		
+		if(user != null) {
+			resultMap.put("result", true);
+			
+			HttpSession session = request.getSession();
+			session.setAttribute("userId", user.getId());
+			session.setAttribute("userName", user.getName());
+		}else {
+			resultMap.put("result", false);
+		}
+		
+		return resultMap;
 	}
 }
