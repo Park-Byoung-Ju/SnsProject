@@ -51,6 +51,6 @@ public class PostRestController {
 		HttpSession session = request.getSession();
 		int userId = (int)session.getAttribute("userId");
 		
-		postService.addLike(userId, postId);
+		postService.deleteLike(userId, postId);
 	}
 }

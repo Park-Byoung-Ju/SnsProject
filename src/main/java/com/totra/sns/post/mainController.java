@@ -26,7 +26,11 @@ public class mainController {
 	public String timeline(Model model
 							,HttpServletRequest request) {
 		
-		List<Object> resultList = postService.timelineList();
+		HttpSession session = request.getSession();
+		int userId = (int) session.getAttribute("userId");
+		
+		List<Object> resultList = postService.timelineList(userId);
+		
 		
 		if(resultList != null) {
 			model.addAttribute("resultList" ,resultList);
@@ -34,8 +38,6 @@ public class mainController {
 		}else {
 			model.addAttribute("result", false);
 		}
-		
-		HttpSession session = request.getSession();
 		
 		model.addAttribute("userNickname", session.getAttribute("userNickname"));
 		

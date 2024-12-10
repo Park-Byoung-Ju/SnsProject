@@ -40,7 +40,7 @@ public class PostService {
 		return false;
 	}
 	
-	public List<Object> timelineList(){
+	public List<Object> timelineList(int userId){
 	
 		List<Post> resultList  = postRepository.timeline();
 		
@@ -51,7 +51,7 @@ public class PostService {
 			
 			Integer like = postRepository.likeCount(resultList.get(i).getId());
 			
-			Integer likeIsTrue = postRepository.likeSelect(user.getId(), resultList.get(i).getId());
+			Integer likeIsTrue = postRepository.likeSelect(userId, resultList.get(i).getId());
 			
 			Map<String, Object> resultMap = new HashMap<>();
 			resultMap.put("user", user);

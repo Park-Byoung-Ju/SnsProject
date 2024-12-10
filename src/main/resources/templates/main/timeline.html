@@ -60,29 +60,31 @@
 <script>
 	$(document).ready(function(){
 		$(".heart").on("click", function(){
-			let postId = $(this).data("data-postId");
-			alert("postId : " + postId);
+			let postId = $(this).attr('data-postId');
+
 			if($(this).hasClass("bi-heart")){
-				
+
 				$.ajax({
 					type:"post"
-					,url:""
-					,data:{}
+					,url:"/main/like/create"
+					,data:{"postId" : postId}
 					,success(response){
-						
+						if(response){
+							location.reload();
+						}
 					}
 				});
 				
 				$(this).addClass("bi-heart-fill");
 				$(this).removeClass("bi-heart");
 			}else{
-				
+
 				$.ajax({
 					type:"delete"
-					,url:""
-					,data:{}
+					,url:"/main/like/delete"
+					,data:{"postId" : postId}
 					,success(response){
-						
+						location.reload();
 					}
 				});
 				
