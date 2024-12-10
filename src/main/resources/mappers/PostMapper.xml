@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="com.totra.sns.post.repository.PostRepository">
+	<select id="timeline" resultType="com.totra.sns.post.domain.Post">
+		SELECT 
+			`id`
+			,`userId`
+			,`contents`
+			,`imagePath`
+			,`createdAt`
+			,`updatedAt`
+		FROM `post`
+		ORDER BY `id` DESC
+		LIMIT 10;
+	</select>
+	
+	<insert id="setBoardCreate" parameterType="map">
+		INSERT INTO `post`
+		(
+			`userId`
+			,`contents`
+			,`imagePath`
+		)
+		VALUE
+		(
+			#{userId}
+			,#{contents}
+			,#{imagePath}
+		)
+	</insert>
+	
+	<select id="readUser" resultType="com.totra.sns.user.domain.User" parameterType="int">
+		SELECT
+			`id`
+			,`loginId`
+			,`password`
+			,`name`
+			,`email`
+			,`nickname`
+			,`createdAt`
+			,`updatedAt`
+		FROM `user`
+		WHERE `id` = #{id}
+	</select>
+	
+	<select id="likeCount" resultType="int" parameterType="int">
+		SELECT
+			count(*)
+		FROM `like`
+		WHERE `postId` = #{postId}
+		GROUP BY `postId`
+	</select>
+	
+	<select id="likeSelect" resultType="int" parameterType="int">
+		SELECT
+			`id`
+			,`postId`
+			,`userId`
+			,`createdAt`
+		FROM `like`
+		WHERE `userId` = #{userId} AND `postId`= #{postId}
+	</select>
+	
+	<insert id="addLike" parameterType="map">
+		INSERT INTO `like`
+		(
+			`userId`
+			,`postId`
+		)
+		VALUE
+		(
+			#{userId}
+			,#{postId}
+		)
+	</insert>
+	
+	<delete id="deleteLike" parameterType="map">
+		DELETE FROM `like`
+		WHERE `userId` = #{userId} AND `postId`= #{postId}
+	</delete>
+
+</mapper>

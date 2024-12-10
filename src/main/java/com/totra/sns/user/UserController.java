@@ -25,7 +25,7 @@ public class UserController {
 	public String logout(HttpServletRequest request) {
 		HttpSession session = request.getSession();
 		session.removeAttribute("userId");
-		session.removeAttribute("userName");
+		session.removeAttribute("userNickname");
 		
 		return "redirect:/user/login-view";
 	}

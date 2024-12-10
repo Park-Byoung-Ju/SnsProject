@@ -12,3 +12,45 @@
 #logo{
 	width:100%;
 }
+
+.box-center{
+	margin:0 auto 0 auto;
+}
+
+section > .section-item{
+	width:600px;
+	margin-top:10px;
+	border:1px solid #cccccc;
+	border-radius:5px;
+}
+
+.user-box{
+	width:50px;
+	height:50px;
+	border-radius:50px;
+}
+
+.bi-person-circle{
+	font-size:40px;
+}
+
+.item{
+	width:600px;
+}
+
+.heart{
+	color:red;
+	cursor: pointer;
+}
+
+.img-box{
+	width:100%;
+}
+
+.instagram-icon{
+	font-size:20px;
+}
+
+
+
+
