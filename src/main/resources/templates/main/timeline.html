@@ -34,94 +34,97 @@
 		</header>
 		
 		<section>
-			<article>
-				<div class="section-item box-center w-50">
-					<div class="p-1 ml-3 mt-2">
-						<span th:text="${userNickname}">닉네임</span>
-					</div>
-					
-					<div class="p-3">
-						<textarea id="contents" class="form-control" rows=5></textarea>
-					</div>
-					
-					<div class="d-flex justify-content-between p-3">
-						<input name="fileInput" id="fileInput" type="file">
-						<button id="boardBtn" class="btn btn-primary">게시하기</button>
-					</div>
-				</div>
-			</article>
-			
-			<th:block th:if="result">
-				<div class="w-50 box-center">
-					<hr>		
-				</div>
-			</th:block>
-			
-			<th:block th:if="result" th:each="resultList : ${resultList}">
-				<div class="section-item box-center">
-					<!-- 게시자 정보 -->
-					<div class="d-flex justify-content-between">
-						<div class="d-flex p-3">
-							<div class="user-box d-flex align-items-start ml-4">
-								<i class="bi bi-person-circle"></i>
-							</div>
-							
-							<div class="ml-2 d-flex align-items-end" th:text="${resultList.user.nickname}"><h2>아이디</h2></div>
+			<div class="box-center w-50">
+				<div>
+					<div class="section-item">
+						<div class="p-1 ml-3 mt-2">
+							<span th:text="${userNickname}">닉네임</span>
 						</div>
 						
-						<div th:if="${resultList.user.nickname == userNickname}" class="d-flex align-items-center p-3 mt-3 mr-3">
-							<i class="bi bi-three-dots instagram-icon modal-popup" th:data-post-id="${resultList.post.id}"></i>
+						<div class="p-3">
+							<textarea id="contents" class="form-control" rows=5></textarea>
+						</div>
+						
+						<div class="d-flex justify-content-between p-3">
+							<input name="fileInput" id="fileInput" type="file">
+							<button id="boardBtn" class="btn btn-primary">게시하기</button>
 						</div>
 					</div>
-					
-					<!-- 게시글 내용 -->
-					<div class="d-flex justify-content-center p-5">
-						<div class="item">
-							<img th:if="${resultList.post.imagePath}" class="img-box bg-primary" th:src="${resultList.post.imagePath}">
-							
-							<div class="mt-2" th:text="${resultList.post.contents}">
-								내용입니다
-							</div>
-							
-							<div class="instagram-icon pt-3 d-flex">
-								<div>
-									<i th:if="${resultList.likeIsTrue}" class="bi bi-heart-fill instagram-icon heart" th:data-post-id="${resultList.post.id}"></i>
-									<i th:unless="${resultList.likeIsTrue}" class="bi bi-heart instagram-icon heart" th:data-post-id="${resultList.post.id}"></i>
-								
-									<small class="ml-1" th:text="|좋아요 ${resultList.likeCount}개|" th:data-like="${resultList.likeCount}">좋아요</small>
+				</div>
+				
+				<th:block th:if="result">
+					<div>
+						<hr>		
+					</div>
+				</th:block>
+				
+				<th:block th:if="result" th:each="resultList : ${resultList}">
+					<div class="section-item">
+						<!-- 게시자 정보 -->
+						<div class="d-flex justify-content-between">
+							<div class="d-flex p-3">
+								<div class="user-box d-flex align-items-start ml-4">
+									<i class="bi bi-person-circle"></i>
 								</div>
 								
-								<div class="ml-3">
-									<i class="bi bi-chat instagram-icon"></i>
+								<div class="ml-2 d-flex align-items-end" th:text="${resultList.user.nickname}"><h2>아이디</h2></div>
+							</div>
+							
+							<div th:if="${resultList.user.nickname == userNickname}" class="d-flex align-items-center p-3 mt-3 mr-3">
+								<i class="bi bi-three-dots instagram-icon modal-popup" th:data-post-id="${resultList.post.id}"></i>
+							</div>
+						</div>
+						
+						<!-- 게시글 내용 -->
+						<div class="d-flex justify-content-center p-5">
+							<div class="item">
+								<img th:if="${resultList.post.imagePath}" class="img-box bg-primary" th:src="${resultList.post.imagePath}">
+								
+								<div class="mt-2" th:text="${resultList.post.contents}">
+									내용입니다
+								</div>
+								
+								<div class="instagram-icon pt-3 d-flex">
+									<div>
+										<i th:if="${resultList.likeIsTrue}" class="bi bi-heart-fill instagram-icon heart" th:data-post-id="${resultList.post.id}"></i>
+										<i th:unless="${resultList.likeIsTrue}" class="bi bi-heart instagram-icon heart" th:data-post-id="${resultList.post.id}"></i>
 									
-									<small class="ml-1" th:text="|댓글 ${resultList.commentCount}개|">댓글 ~~개</small>
+										<small class="ml-1" th:text="|좋아요 ${resultList.likeCount}개|" th:data-like="${resultList.likeCount}">좋아요</small>
+									</div>
+									
+									<div class="ml-3">
+										<i class="bi bi-chat instagram-icon"></i>
+										
+										<small class="ml-1" th:text="|댓글 ${resultList.commentCount}개|">댓글 ~~개</small>
+									</div>
+								</div>
+								
+								<hr>
+								
+								<div>
+									<th:block th:if="${resultList.commentList != null}" th:each="commentList : ${resultList.commentList}">
+										<div class="d-flex">
+											<b th:text="${commentList.user.nickname}">아이디</b>
+											<p class="ml-2" th:text="${commentList.contents}">코멘트</p>
+										</div>
+									</th:block>
 								</div>
 							</div>
 							
-							<hr>
-							
-							<div>
-								<th:block th:if="${resultList.commentList != null}" th:each="commentList : ${resultList.commentList}">
-									<div class="d-flex">
-										<b th:text="${commentList.user.nickname}">아이디</b>
-										<p class="ml-2" th:text="${commentList.contents}">코멘트</p>
-									</div>
-								</th:block>
-							</div>
 						</div>
 						
+						<div class="p-3 d-flex comment-box">
+							<input class="form-control col-9 ml-4" type="text" th:id="${resultList.post.id}">
+							<button class="btn btn-primary col-2 commentBtn" type="button" th:data-id="${resultList.post.id}">게시</button>
+						</div>
 					</div>
-					<form class="p-3 d-flex comment-box">
-						<input class="form-control col-9 ml-4" type="text" th:id="${resultList.post.id}">
-						<button class="btn btn-primary col-2 commentBtn" type="button" th:data-id="${resultList.post.id}">게시</button>
-					</form>
+				</th:block>
+		<!--
+				<div class="box-center w-50 my-3">
+					<button id="pageBtn" class="btn btn-white w-100">더보기</button>
 				</div>
-			</th:block>
-	<!--
-			<div class="box-center w-50 my-3">
-				<button id="pageBtn" class="btn btn-white w-100">더보기</button>
-			</div>
-			  -->		
+				  -->	
+			</div>	
 		</section>
 		
 		<footer class="text-center mt-4">
