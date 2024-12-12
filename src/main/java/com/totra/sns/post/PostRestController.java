@@ -12,7 +12,7 @@ import com.totra.sns.post.service.PostService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
-@RequestMapping("/main")
+@RequestMapping("/post")
 @RestController
 public class PostRestController {
 	
@@ -21,10 +21,11 @@ public class PostRestController {
 	public PostRestController(PostService postService) {
 		this.postService = postService;
 	}
+	
 
 	@PostMapping("/board/create")
 	public boolean boardCreate(@RequestParam("contents") String contents
-							, @RequestParam("imagePath") MultipartFile imagePath
+							, @RequestParam(name="imagePath", required=false) MultipartFile imagePath
 							, HttpServletRequest request) {
 		
 		HttpSession session = request.getSession();
@@ -52,5 +53,18 @@ public class PostRestController {
 		int userId = (int)session.getAttribute("userId");
 		
 		postService.deleteLike(userId, postId);
+	}
+	
+	@PostMapping("/comment/create")
+	public boolean commentCreate(@RequestParam("comment") String comment
+								,@RequestParam("postId") int postId
+								,HttpServletRequest request) {
+		
+		HttpSession session = request.getSession();
+		int userId = (int)session.getAttribute("userId");
+		
+		boolean isTrue = postService.addComment(userId, postId, comment);
+		return isTrue;
+		// return false;
 	}
 }

@@ -42,4 +42,18 @@
 		WHERE loginId = #{loginId} AND password = #{password}
 
 	</select>
+	
+	<select id="readUser" resultType="com.totra.sns.user.domain.User" parameterType="int">
+		SELECT
+			`id`
+			,`loginId`
+			,`password`
+			,`name`
+			,`email`
+			,`nickname`
+			,`createdAt`
+			,`updatedAt`
+		FROM `user`
+		WHERE `id` = #{id}
+	</select>
 </mapper>

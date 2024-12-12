@@ -18,4 +18,6 @@ public interface UserRepository {
 	
 	public User login(@Param("loginId") String loginId
 					,@Param("password") String password);
+	
+	public User readUser(@Param("id") int id);
 }

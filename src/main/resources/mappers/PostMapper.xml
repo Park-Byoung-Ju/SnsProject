@@ -32,20 +32,6 @@
 		)
 	</insert>
 	
-	<select id="readUser" resultType="com.totra.sns.user.domain.User" parameterType="int">
-		SELECT
-			`id`
-			,`loginId`
-			,`password`
-			,`name`
-			,`email`
-			,`nickname`
-			,`createdAt`
-			,`updatedAt`
-		FROM `user`
-		WHERE `id` = #{id}
-	</select>
-	
 	<select id="likeCount" resultType="int" parameterType="int">
 		SELECT
 			count(*)
@@ -82,4 +68,26 @@
 		WHERE `userId` = #{userId} AND `postId`= #{postId}
 	</delete>
 
+	<insert id="addComment" parameterType="map">
+		INSERT INTO `comment`
+		(`userId`,`postId`,`contents`)
+		VALUE
+		(
+			#{userId}
+			,#{postId}
+			,#{contents}
+		);
+	</insert>
+	
+	<select id="postIdByCommentList" parameterType="map" resultType="com.totra.sns.post.domain.Comment">
+		SELECT
+			`id`
+			,`userId`
+			,`postId`
+			,`contents`
+			,`createdAt`
+			,`updatedAt`
+		FROM `comment`
+		WHERE `postId` = #{postId}
+	</select>
 </mapper>

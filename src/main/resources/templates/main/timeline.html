@@ -20,14 +20,37 @@
 		</header>
 		
 		<section>
+			<article>
+				<div class="section-item box-center w-50">
+					<div class="p-1 ml-3 mt-2">
+						<span th:text="${userNickname}">닉네임</span>
+					</div>
+					
+					<div class="p-3">
+						<textarea id="contents" class="form-control" rows=5></textarea>
+					</div>
+					
+					<div class="d-flex justify-content-between p-3">
+						<input name="fileInput" id="fileInput" type="file">
+						<button id="boardBtn" class="btn btn-primary">게시하기</button>
+					</div>
+				</div>
+			</article>
+			
+			<th:block th:if="result">
+				<div class="w-50 box-center">
+					<hr>		
+				</div>
+			</th:block>
+			
 			<th:block th:if="result" th:each="resultList : ${resultList}">
 				<div class="section-item box-center">
 					<div class="d-flex p-3">
-						<div class="user-box d-flex align-items-top">
+						<div class="user-box d-flex align-items-start">
 							<i class="bi bi-person-circle"></i>
 						</div>
 						
-						<div class="d-flex align-items-end" th:text="${resultList.user.nickname}"><h2>아이디</h2></div>
+						<div class="ml-2 d-flex align-items-end" th:text="${resultList.user.nickname}"><h2>아이디</h2></div>
 					</div>
 					
 					<div class="d-flex justify-content-center p-5">
@@ -38,19 +61,50 @@
 								내용입니다
 							</div>
 							
-							<div class="instagram-icon pt-3">
-								<span>
-									<i th:if="${resultList.like}" class="bi bi-heart-fill instagram-icon heart" th:data-postId="${resultList.post.id}"></i>
-									<i th:unless="${resultList.like}" class="bi bi-heart instagram-icon heart" th:data-postId="${resultList.post.id}"></i>
+							<div class="instagram-icon pt-3 d-flex">
+								<div>
+									<i th:if="${resultList.likeIsTrue}" class="bi bi-heart-fill instagram-icon heart" th:data-post-id="${resultList.post.id}"></i>
+									<i th:unless="${resultList.likeIsTrue}" class="bi bi-heart instagram-icon heart" th:data-post-id="${resultList.post.id}"></i>
 								
-									<small class="ml-2" th:text="|좋아요 ${resultList.likeCount}개|">좋아요</small>
-								</span>
+									<small class="ml-1" th:text="|좋아요 ${resultList.likeCount}개|" th:data-like="${resultList.likeCount}">좋아요</small>
+								</div>
+								
+								<div class="ml-3">
+									<i class="bi bi-chat instagram-icon"></i>
+									
+									<small class="ml-1" th:text="|댓글 ${resultList.commentCount}개|">댓글 ~~개</small>
+								</div>
+							</div>
+							
+							<hr>
+							
+							<div>
+								<th:block th:if="${resultList.commentList != null}" th:each="commentList : ${resultList.commentList}">
+									<div class="d-flex">
+										<b th:text="${commentList.user.nickname}">아이디</b>
+										<p class="ml-2" th:text="${commentList.contents}">코멘트</p>
+									</div>
+								</th:block>
 							</div>
 						</div>
+						
 					</div>
+					<form class="p-3 d-flex comment-box">
+						<input class="form-control col-9 ml-4" type="text" th:id="${resultList.post.id}">
+						<button class="btn btn-primary col-2 commentBtn" type="button" th:data-id="${resultList.post.id}">게시</button>
+					</form>
 				</div>
 			</th:block>
+	<!--
+			<div class="box-center w-50 my-3">
+				<button id="pageBtn" class="btn btn-white w-100">더보기</button>
+			</div>
+			  -->		
 		</section>
+		
+		<footer class="text-center mt-4">
+			<small class="text-secondary">Copyright 2024. Totragram All Rights Reserved</small>
+		</footer>
 	</div>
 	
 <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -59,38 +113,111 @@
 	
 <script>
 	$(document).ready(function(){
+		
+		// 게시버튼
+		$("#boardBtn").on("click", function(){
+			let contents = $("#contents").val();
+			let fileInput = $("#fileInput")[0].files[0];
+			
+			
+			if(contents.length == 0){
+				alert("내용을 입력해주세요");
+				return false;
+			}
+			
+			let formData = new FormData();
+			
+			formData.append("contents", contents);
+			formData.append("imagePath", fileInput);
+			
+			$.ajax({
+				type:"post"
+				,url:"/post/board/create"
+				,data:formData
+				,enctype:"multipart/form-data"
+				,processData:false
+				,contentType:false
+				,success(response){
+					if(response){
+						alert("저장완료");
+						location.reload();
+					}else{
+						alert("저장중 에러");
+					}
+				}
+				,error(){
+					alert("에러");
+				}
+			});
+		});
+		
+		// 댓글
+		$(".commentBtn").on("click", function(){
+			let postId = $(this).data("id"); // btn에 원하는 input id 저장
+			// input id를 문자열로 만들어서
+			let commentId = "#" + postId;
+			// 만들어진 문자열을 대입해서 "#id" 이러한 형식으로 넣지않고
+			// 아무 버튼이나 눌렀을때 가져오는 input이 다르게 제작
+			let comment = $(commentId).val();
+			// let comment = $(this).prev().val(); 내 바로 앞에있는 태그의 객체를 가져온다
+			if(comment.length == 0){
+
+				return false;
+			}
+			
+			$.ajax({
+				type:"post"
+				,url:"/post/comment/create"
+				,data:{"comment" : comment
+						,"postId" : postId}
+				,success(response){
+					if(response){
+						alert("성공!")
+						location.reload();
+					}else{
+						alert("실패!");
+					}
+					
+				},error(){
+					alert("서버문제");
+				}
+			});
+		});
+		
+		// 좋아요
 		$(".heart").on("click", function(){
-			let postId = $(this).attr('data-postId');
+			let postId = $(this).data('post-id');
+			let likeCount = $(this).next().data("like");
 
 			if($(this).hasClass("bi-heart")){
 
 				$.ajax({
 					type:"post"
-					,url:"/main/like/create"
+					,url:"/post/like/create"
 					,data:{"postId" : postId}
-					,success(response){
-						if(response){
-							location.reload();
-						}
-					}
 				});
-				
+				likeCount++;
 				$(this).addClass("bi-heart-fill");
 				$(this).removeClass("bi-heart");
+				
 			}else{
 
 				$.ajax({
 					type:"delete"
-					,url:"/main/like/delete"
+					,url:"/post/like/delete"
 					,data:{"postId" : postId}
-					,success(response){
-						location.reload();
-					}
 				});
-				
+				likeCount--;
 				$(this).addClass("bi-heart");
 				$(this).removeClass("bi-heart-fill");
+				
 			}
+			$(this).next().data("like", likeCount);
+			$(this).next().text("좋아요 " + likeCount + "개");
+			alert(likeCount);
+			
+			
+			
 		});
 	});
 </script>

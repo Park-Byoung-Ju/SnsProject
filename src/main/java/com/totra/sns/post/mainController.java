@@ -6,7 +6,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import com.totra.sns.post.domain.Timeline;
 import com.totra.sns.post.service.PostService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,7 +31,7 @@ public class mainController {
 		HttpSession session = request.getSession();
 		int userId = (int) session.getAttribute("userId");
 		
-		List<Object> resultList = postService.timelineList(userId);
+		List<Timeline> resultList = postService.timelineList(userId);
 		
 		
 		if(resultList != null) {
