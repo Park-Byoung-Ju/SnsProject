@@ -67,4 +67,9 @@ public class PostRestController {
 		return isTrue;
 		// return false;
 	}
+	
+	@DeleteMapping("/board/delete")
+	public void deletePost(@RequestParam("postId") int postId) {
+		postService.deletePost(postId);
+	}
 }

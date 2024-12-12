@@ -43,7 +43,6 @@ public class mainController {
 		
 		model.addAttribute("userNickname", session.getAttribute("userNickname"));
 		
-		
 		return "main/timeline";
 	}
 	

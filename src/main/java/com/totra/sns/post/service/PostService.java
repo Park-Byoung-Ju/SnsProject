@@ -153,4 +153,10 @@ public class PostService {
 		
 		return false;
 	}
+	
+	public void deletePost(int postId) {
+		postRepository.deletePost(postId);
+		postRepository.deleteByLike(postId);
+		postRepository.deleteComment(postId);
+	}
 }

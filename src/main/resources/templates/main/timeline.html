@@ -10,6 +10,20 @@
 <title>Totragram</title>
 </head>
 <body>
+	<!-- 모달 목록 -->
+	<!-- 모달 확인 -->
+	<div class="modal">
+		<div class="modal-body text-center">
+			<span>이 게시물을 삭제하시겠습니까?</span>
+			
+			<div class="d-flex mt-3">
+				<button id="deleteBtn" class="btn btn-primary w-50">삭제</button>
+				<button id="noneBtn" class="btn btn-danger w-50">취소</button>
+			</div>
+		</div>	
+	</div>
+
+	<!-- 메인 -->
 	<div id="wrap">
 		<header class="d-flex justify-content-between">
 			<div>
@@ -45,14 +59,22 @@
 			
 			<th:block th:if="result" th:each="resultList : ${resultList}">
 				<div class="section-item box-center">
-					<div class="d-flex p-3">
-						<div class="user-box d-flex align-items-start">
-							<i class="bi bi-person-circle"></i>
+					<!-- 게시자 정보 -->
+					<div class="d-flex justify-content-between">
+						<div class="d-flex p-3">
+							<div class="user-box d-flex align-items-start ml-4">
+								<i class="bi bi-person-circle"></i>
+							</div>
+							
+							<div class="ml-2 d-flex align-items-end" th:text="${resultList.user.nickname}"><h2>아이디</h2></div>
 						</div>
 						
-						<div class="ml-2 d-flex align-items-end" th:text="${resultList.user.nickname}"><h2>아이디</h2></div>
+						<div th:if="${resultList.user.nickname == userNickname}" class="d-flex align-items-center p-3 mt-3 mr-3">
+							<i class="bi bi-three-dots instagram-icon modal-popup" th:data-post-id="${resultList.post.id}"></i>
+						</div>
 					</div>
 					
+					<!-- 게시글 내용 -->
 					<div class="d-flex justify-content-center p-5">
 						<div class="item">
 							<img th:if="${resultList.post.imagePath}" class="img-box bg-primary" th:src="${resultList.post.imagePath}">
@@ -114,6 +136,32 @@
 <script>
 	$(document).ready(function(){
 		
+		// 모달 창
+		$(".modal-popup").on("click", function(){
+			let postId = $(this).data("post-id");
+			
+			$(".modal").fadeIn();
+			
+			$("#deleteBtn").on("click", function(){
+				$(".modal").fadeOut();
+				
+				//게시글 삭제
+				$.ajax({
+					type:"delete"
+					,url:"/post/board/delete"
+					,data:{"postId" : postId}
+					,success(){
+						location.reload();
+					}
+				});
+			});
+			
+			$("#noneBtn").on("click", function(){
+				$(".modal").fadeOut();
+			});
+			
+		});
+		
 		// 게시버튼
 		$("#boardBtn").on("click", function(){
 			let contents = $("#contents").val();
@@ -139,7 +187,7 @@
 				,contentType:false
 				,success(response){
 					if(response){
-						alert("저장완료");
+						alert("게시완료");
 						location.reload();
 					}else{
 						alert("저장중 에러");
@@ -172,7 +220,6 @@
 						,"postId" : postId}
 				,success(response){
 					if(response){
-						alert("성공!")
 						location.reload();
 					}else{
 						alert("실패!");
@@ -214,10 +261,7 @@
 			}
 			$(this).next().data("like", likeCount);
 			$(this).next().text("좋아요 " + likeCount + "개");
-			alert(likeCount);
-			
-			
-			
+					
 		});
 	});
 </script>

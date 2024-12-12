@@ -90,4 +90,19 @@
 		FROM `comment`
 		WHERE `postId` = #{postId}
 	</select>
+	
+	<delete id="deletePost" parameterType="int">
+		DELETE FROM `post`
+		WHERE `id` = #{postId}
+	</delete>
+	
+	<delete id="deleteByLike" parameterType="int">
+		DELETE FROM `like`
+		WHERE `postId` = #{postId}
+	</delete>
+
+	<delete id="deleteComment" parameterType="int">
+		DELETE FROM `comment`
+		WHERE `postId` = #{postId}
+	</delete>
 </mapper>
