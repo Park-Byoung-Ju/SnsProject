@@ -36,17 +36,23 @@
 		<section>
 			<div class="box-center w-50">
 				<div>
+					<!-- 게시글 게시 -->
 					<div class="section-item">
+						<!-- 작성자 닉네임 -->
 						<div class="p-1 ml-3 mt-2">
 							<span th:text="${userNickname}">닉네임</span>
 						</div>
 						
+						<!-- 작성 내용 -->
 						<div class="p-3">
 							<textarea id="contents" class="form-control" rows=5></textarea>
 						</div>
 						
+						<!-- 이미지 선택 및 게시버튼 -->
 						<div class="d-flex justify-content-between p-3">
-							<input name="fileInput" id="fileInput" type="file">
+							<input class="d-none" name="fileInput" id="fileInput" type="file">
+							
+							<i id="imageButton" class="bi bi-image image-icon ml-2	"></i>
 							<button id="boardBtn" class="btn btn-primary">게시하기</button>
 						</div>
 					</div>
@@ -78,24 +84,34 @@
 						<!-- 게시글 내용 -->
 						<div class="d-flex justify-content-center p-5">
 							<div class="item">
+								<!-- 게시글 이미지 -->
 								<img th:if="${resultList.post.imagePath}" class="img-box bg-primary" th:src="${resultList.post.imagePath}">
 								
+								<!-- 게시글 내용 -->
 								<div class="mt-2" th:text="${resultList.post.contents}">
 									내용입니다
 								</div>
 								
-								<div class="instagram-icon pt-3 d-flex">
-									<div>
-										<i th:if="${resultList.likeIsTrue}" class="bi bi-heart-fill instagram-icon heart" th:data-post-id="${resultList.post.id}"></i>
-										<i th:unless="${resultList.likeIsTrue}" class="bi bi-heart instagram-icon heart" th:data-post-id="${resultList.post.id}"></i>
-									
-										<small class="ml-1" th:text="|좋아요 ${resultList.likeCount}개|" th:data-like="${resultList.likeCount}">좋아요</small>
-									</div>
-									
-									<div class="ml-3">
-										<i class="bi bi-chat instagram-icon"></i>
+								<!-- 좋아요, 댓글, 북마크 -->
+								<div class="pt-3 d-flex justify-content-between">
+									<div class="d-flex">
+										<div>
+											<i th:if="${resultList.likeIsTrue}" class="bi bi-heart-fill instagram-icon heart" th:data-post-id="${resultList.post.id}"></i>
+											<i th:unless="${resultList.likeIsTrue}" class="bi bi-heart instagram-icon heart" th:data-post-id="${resultList.post.id}"></i>
 										
-										<small class="ml-1" th:text="|댓글 ${resultList.commentCount}개|">댓글 ~~개</small>
+											<small class="ml-1" th:text="|좋아요 ${resultList.likeCount}개|" th:data-like="${resultList.likeCount}">좋아요</small>
+										</div>
+										
+										<div class="ml-3">
+											<i class="bi bi-chat instagram-icon"></i>
+											
+											<small class="ml-1" th:text="|댓글 ${resultList.commentCount}개|">댓글 ~~개</small>
+										</div>					
+									</div>
+									<!-- 북마크 -->
+									<div>
+										<i th:if="${resultList.bookmarkIsTrue}" class="bi bi-bookmark-fill instagram-icon bookmark" th:data-post-id="${resultList.post.id}"></i>
+										<i th:unless="${resultList.bookmarkIsTrue}" class="bi bi-bookmark instagram-icon bookmark" th:data-post-id="${resultList.post.id}"></i>
 									</div>
 								</div>
 								
@@ -138,7 +154,39 @@
 	
 <script>
 	$(document).ready(function(){
+		//bookmark
+		$(".bookmark").on("click", function(){
+			let postId = $(this).data("post-id");
+			
+			
+			if($(this).hasClass("bi-bookmark")){
+				$.ajax({
+					type:"post"
+					,url:"/post/bookmark/create"
+					,data:{"postId" : postId}	
+				});
+				
+				$(this).addClass("bi-bookmark-fill");
+				$(this).removeClass("bi-bookmark");
+			}else{
+				$.ajax({
+					type:"delete"
+					,url:"/post/bookmark/delete"
+					,data:{"postId" : postId}
+				});
+				
+				$(this).addClass("bi-bookmark");
+				$(this).removeClass("bi-bookmark-fill");
+			}
+			
+		});
 		
+		//imageButton
+		$("#imageButton").on("click", function(){
+			$("#fileInput").click();
+		});
+		
+		// bootstrap 4 modal
 		// 모달 창
 		$(".modal-popup").on("click", function(){
 			let postId = $(this).data("post-id");
@@ -153,8 +201,15 @@
 					type:"delete"
 					,url:"/post/board/delete"
 					,data:{"postId" : postId}
-					,success(){
-						location.reload();
+					,success:function(response){
+						if(response){
+							alert("삭제 성공!");
+							location.reload();	
+						}else{
+							alert("삭제실패")
+						}
+					},error:function(){
+						alert("서버문제");
 					}
 				});
 			});
@@ -236,8 +291,12 @@
 		
 		// 좋아요
 		$(".heart").on("click", function(){
+			
+			let heart = $(this);
+			
 			let postId = $(this).data('post-id');
-			let likeCount = $(this).next().data("like");
+			//let likeCount = $(this).next().data("like");
+			
 
 			if($(this).hasClass("bi-heart")){
 
@@ -245,10 +304,26 @@
 					type:"post"
 					,url:"/post/like/create"
 					,data:{"postId" : postId}
-				});
-				likeCount++;
-				$(this).addClass("bi-heart-fill");
-				$(this).removeClass("bi-heart");
+				// success를 흐르지않고 ajax 아래에 있는 코드가 먼저 흐를수도있다.
+				// 왜냐하면 success는 응답이 돌아왔을때 작동하기 때문
+					,success:function(response){
+						if(response){
+							let likeCount = heart.next().data("like");
+							
+							likeCount++;
+							
+							heart.addClass("bi-heart-fill");
+							heart.removeClass("bi-heart");
+							
+							heart.next().data("like", likeCount);
+							heart.next().text("좋아요 " + likeCount + "개");
+							
+						}
+					}
+				});	
+				//likeCount++;
+				//heart.addClass("bi-heart-fill");
+				//heart.removeClass("bi-heart");
 				
 			}else{
 
@@ -256,14 +331,25 @@
 					type:"delete"
 					,url:"/post/like/delete"
 					,data:{"postId" : postId}
+					,success:function(response){
+						if(response){
+							let likeCount = heart.next().data("like");
+							
+							likeCount--;
+							
+							heart.addClass("bi-heart");
+							heart.removeClass("bi-heart-fill");
+							
+							heart.next().data("like", likeCount);
+							heart.next().text("좋아요 " + likeCount + "개");
+						}
+					}
 				});
-				likeCount--;
-				$(this).addClass("bi-heart");
-				$(this).removeClass("bi-heart-fill");
+				
 				
 			}
-			$(this).next().data("like", likeCount);
-			$(this).next().text("좋아요 " + likeCount + "개");
+			//$(this).next().data("like", likeCount);
+			//$(this).next().text("좋아요 " + likeCount + "개");
 					
 		});
 	});

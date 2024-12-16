@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.totra.sns.common.FileManager;
@@ -46,22 +47,28 @@ public class PostService {
 	}
 	
 	public List<Timeline> timelineList(int userId){
-		
+		// 타임라인 게시글 데이터
 		List<Post> resultList = postRepository.timeline();
-		
+		// model로 보낼 총 데이터 리스트
 		List<Timeline> timelineList = new ArrayList<>();
 		
 		for(int i = 0; i < resultList.size(); i++) {
+			// timeline 객체로 저장
 			Timeline timeline = new Timeline(); // timeline => post, user, like정보, 댓글 저장
 			
+			// 게시글을 작성한 user 정보
 			User user = userRepository.readUser(resultList.get(i).getUserId());
-			
+			// 게시글의 좋아요를 누른 숫자
 			Integer likeCount = postRepository.likeCount(resultList.get(i).getId());
-			
+			// 내가 게시글에 좋아요를 누른 여부
 			Integer likeIsTrue = postRepository.likeSelect(userId, resultList.get(i).getId());
-			
+			// 게시글의 댓글
 			List<Comment> commentList = postRepository.postIdByCommentList(resultList.get(i).getId());
+			// 북마크 여부
+			Integer bookmarkIsTrue = postRepository.bookmarkIsTrue(userId, resultList.get(i).getId());
 			
+			
+			// 댓글 리스트의 user정보 넣기
 			for(int j = 0; j < commentList.size(); j++) {
 				int commentUserId = commentList.get(j).getUserId();
 				User commentUser = userRepository.readUser(commentUserId);
@@ -83,6 +90,12 @@ public class PostService {
 				timeline.setLikeIsTrue(false);
 			}else {
 				timeline.setLikeIsTrue(true);
+			}
+			
+			if(bookmarkIsTrue == null || bookmarkIsTrue <= 0) {
+				timeline.setBookmarkIsTrue(false);
+			}else {
+				timeline.setBookmarkIsTrue(true);
 			}
 			
 			timelineList.add(timeline);
@@ -141,6 +154,7 @@ public class PostService {
 	
 	public void deleteLike(int userId, int postId) {
 		postRepository.deleteLike(userId, postId);
+
 	}
 	
 	public boolean addComment(int userId, int postId, String comment) {
@@ -154,9 +168,43 @@ public class PostService {
 		return false;
 	}
 	
-	public void deletePost(int postId) {
-		postRepository.deletePost(postId);
-		postRepository.deleteByLike(postId);
-		postRepository.deleteComment(postId);
+	@Transactional
+	public boolean deletePost(int postId) {
+		
+		Post post = postRepository.getPostById(postId);
+		
+		// 삭제할때는 select와 delete가 같이 수행되어야한다.
+		// 트랜잭션(transcation)
+		
+		postRepository.deletePost(post.getId());
+		
+		FileManager.removeFile(post.getImagePath());
+		postRepository.deleteByLike(post.getId());
+		postRepository.deleteComment(post.getId());
+		postRepository.deleteByPostIdBookmark(post.getId());
+		
+		post = postRepository.getPostById(postId);
+		
+		if(post == null) {
+			return true;
+		}else {
+			return false;
+		}
+		
+		
+	}
+	
+	public boolean addBookmark(int userId, int postId) {
+		int count = postRepository.addBookmark(userId, postId);
+		
+		if(count == 1) {
+			return true;
+		}
+		
+		return false;
+	}
+	
+	public void deleteBookmark(int userId, int postId) {
+		postRepository.deleteBookmark(userId, postId);
 	}
 }

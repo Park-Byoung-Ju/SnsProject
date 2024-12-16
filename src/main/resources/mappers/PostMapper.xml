@@ -17,6 +17,19 @@
 		LIMIT 10;
 	</select>
 	
+	<select id="getPostById" resultType="com.totra.sns.post.domain.Post" parameterType="int">
+		SELECT
+			`id`
+			,`userId`
+			,`contents`
+			,`imagePath`
+			,`createdAt`
+			,`updatedAt`
+		FROM `post`
+		WHERE `id` = #{postId}
+			
+	</select>
+	
 	<insert id="setBoardCreate" parameterType="map">
 		INSERT INTO `post`
 		(
@@ -103,6 +116,40 @@
 
 	<delete id="deleteComment" parameterType="int">
 		DELETE FROM `comment`
+		WHERE `postId` = #{postId}
+	</delete>
+	
+	<insert id="addBookmark" parameterType="int">
+		INSERT INTO `bookmark`
+		(
+			`userId`
+			,`postId`
+		)
+		VALUE
+		(
+			#{userId}
+			,#{postId}
+		)
+	</insert>
+	
+	<delete id="deleteBookmark" parameterType="int">
+		DELETE FROM `bookmark`
+		WHERE `postId` = #{postId} AND `userId` = #{userId}
+	</delete>
+	
+	<select id="bookmarkIsTrue" parameterType="int" resultType="int">
+		SELECT
+			`id`
+			,`userId`
+			,`postId`
+			,`category`
+			,`createdAt`
+		FROM `bookmark`
+		WHERE `postId` = #{postId} AND `userId` = #{userId}
+	</select>
+	
+	<delete id="deleteByPostIdBookmark" parameterType="int">
+		DELETE FROM `bookmark`
 		WHERE `postId` = #{postId}
 	</delete>
 </mapper>

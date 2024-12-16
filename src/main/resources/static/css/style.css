@@ -50,12 +50,21 @@
 	cursor: pointer;
 }
 
+.bookmark{
+	cursor: pointer;
+}
+
 .img-box{
 	width:100%;
 }
 
 .instagram-icon{
 	font-size:20px;
+}
+
+.image-icon{
+	font-size:30px;
+	cursor: pointer;
 }
 
 .comment-box{

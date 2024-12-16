@@ -6,7 +6,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.totra.sns.post.domain.Timeline;
 import com.totra.sns.post.service.PostService;
@@ -44,16 +43,5 @@ public class mainController {
 		model.addAttribute("userNickname", session.getAttribute("userNickname"));
 		
 		return "main/timeline";
-	}
-	
-	@GetMapping("/post-view")
-	public String post(Model model
-					,HttpServletRequest request) {
-		HttpSession session = request.getSession();
-		String userNickname = (String) session.getAttribute("userNickname");
-		
-		model.addAttribute("userNickname", userNickname);
-		
-		return "main/post";
 	}
 }

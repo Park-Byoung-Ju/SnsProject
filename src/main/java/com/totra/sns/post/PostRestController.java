@@ -47,12 +47,14 @@ public class PostRestController {
 	}
 	
 	@DeleteMapping("/like/delete")
-	public void deleteLike(@RequestParam("postId") int postId
+	public boolean deleteLike(@RequestParam("postId") int postId
 						,HttpServletRequest request) {
 		HttpSession session = request.getSession();
 		int userId = (int)session.getAttribute("userId");
 		
 		postService.deleteLike(userId, postId);
+		
+		return true;
 	}
 	
 	@PostMapping("/comment/create")
@@ -69,7 +71,31 @@ public class PostRestController {
 	}
 	
 	@DeleteMapping("/board/delete")
-	public void deletePost(@RequestParam("postId") int postId) {
-		postService.deletePost(postId);
+	public boolean deletePost(@RequestParam("postId") int postId) {
+		 boolean isTrue = postService.deletePost(postId);
+		 
+		 return isTrue;
+	}
+	
+	@PostMapping("/bookmark/create")
+	public boolean addBookmark(@RequestParam("postId") int postId
+					,HttpServletRequest request) {
+		
+		HttpSession session = request.getSession();
+		int userId = (int)session.getAttribute("userId");
+		
+		
+		
+		return postService.addBookmark(userId, postId);
+	}
+	
+	@DeleteMapping("/bookmark/delete")
+	public void deleteBookmark(@RequestParam("postId") int postId
+			,HttpServletRequest request) {
+		
+		HttpSession session = request.getSession();
+		int userId = (int)session.getAttribute("userId");
+		
+		postService.deleteBookmark(userId, postId);
 	}
 }

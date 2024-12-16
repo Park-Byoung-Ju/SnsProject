@@ -17,6 +17,8 @@ public class Timeline {
 	private boolean likeIsTrue;
 	
 	private int commentCount;
+	
+	private boolean bookmarkIsTrue;
 
 	public User getUser() {
 		return user;
@@ -64,6 +66,14 @@ public class Timeline {
 
 	public void setCommentCount(int commentCount) {
 		this.commentCount = commentCount;
+	}
+
+	public boolean isBookmarkIsTrue() {
+		return bookmarkIsTrue;
+	}
+
+	public void setBookmarkIsTrue(boolean bookmarkIsTrue) {
+		this.bookmarkIsTrue = bookmarkIsTrue;
 	}
 
 }
